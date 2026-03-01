@@ -1,5 +1,3 @@
- 
-// server.js
 const express = require('express');
 const session = require('express-session');
 const bodyParser = require('body-parser');
@@ -21,14 +19,24 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Session configuration
 app.use(session({
-    secret: 'ethiopian-airlines-fraud-simulation',
+    secret: process.env.SESSION_SECRET || 'ethiopian-airlines-fraud-simulation',
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: false } // Set to true if using HTTPS
+    cookie: { 
+        secure: process.env.NODE_ENV === 'production', // true in production (HTTPS)
+        maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    }
 }));
 
+// Ensure database directory exists
+const fs = require('fs');
+const dbDir = path.join(__dirname, 'database');
+if (!fs.existsSync(dbDir)){
+    fs.mkdirSync(dbDir, { recursive: true });
+}
+
 // Database setup
-const db = new sqlite3.Database('./database/fraud_simulation.db', (err) => {
+const db = new sqlite3.Database(path.join(dbDir, 'fraud_simulation.db'), (err) => {
     if (err) {
         console.error('Database connection error:', err);
     } else {
@@ -38,6 +46,7 @@ const db = new sqlite3.Database('./database/fraud_simulation.db', (err) => {
 });
 
 function initializeDatabase() {
+    // Create applicants table
     db.run(`
         CREATE TABLE IF NOT EXISTS applicants (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -61,8 +70,15 @@ function initializeDatabase() {
             ip_address TEXT,
             user_agent TEXT
         )
-    `);
+    `, (err) => {
+        if (err) {
+            console.error('Error creating applicants table:', err);
+        } else {
+            console.log('Applicants table ready');
+        }
+    });
 
+    // Create payments table
     db.run(`
         CREATE TABLE IF NOT EXISTS payments (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -76,7 +92,13 @@ function initializeDatabase() {
             notified INTEGER DEFAULT 0,
             FOREIGN KEY (applicant_id) REFERENCES applicants(applicant_id)
         )
-    `);
+    `, (err) => {
+        if (err) {
+            console.error('Error creating payments table:', err);
+        } else {
+            console.log('Payments table ready');
+        }
+    });
 
     console.log('Database tables initialized');
 }
@@ -84,18 +106,53 @@ function initializeDatabase() {
 // Make db available to routes
 app.locals.db = db;
 
-// Routes
-app.use('/api/auth', require('./routes/auth'));
-app.use('/api/exam', require('./routes/exam'));
-app.use('/api/payment', require('./routes/payment'));
+// Import routes
+try {
+    app.use('/api/auth', require('./routes/auth'));
+    app.use('/api/exam', require('./routes/exam'));
+    app.use('/api/payment', require('./routes/payment'));
+    console.log('Routes loaded successfully');
+} catch (err) {
+    console.error('Error loading routes:', err);
+}
+
+// ============================================
+// IMPORTANT: ROOT ROUTE HANDLER FOR HOMEPAGE
+// ============================================
+// Serve the main page for root path
+app.get('/', (req, res) => {
+    const indexPath = path.join(__dirname, 'public', 'index.html');
+    
+    // Check if file exists
+    if (fs.existsSync(indexPath)) {
+        res.sendFile(indexPath);
+    } else {
+        console.error('index.html not found at:', indexPath);
+        res.status(404).send('Homepage not found. Please check your public folder.');
+    }
+});
 
 // Admin routes (fraudster control panel)
 app.get('/admin', (req, res) => {
-    res.sendFile(path.join(__dirname, 'views/admin/dashboard.html'));
+    const adminPath = path.join(__dirname, 'views/admin/dashboard.html');
+    
+    if (fs.existsSync(adminPath)) {
+        res.sendFile(adminPath);
+    } else {
+        console.error('Admin dashboard not found at:', adminPath);
+        res.status(404).send('Admin page not found');
+    }
 });
 
 app.get('/admin/stats', (req, res) => {
-    res.sendFile(path.join(__dirname, 'views/admin/stats.html'));
+    const statsPath = path.join(__dirname, 'views/admin/stats.html');
+    
+    if (fs.existsSync(statsPath)) {
+        res.sendFile(statsPath);
+    } else {
+        console.error('Stats page not found at:', statsPath);
+        res.status(404).send('Stats page not found');
+    }
 });
 
 // API endpoint for admin to get all applicants
@@ -106,6 +163,7 @@ app.get('/api/admin/applicants', (req, res) => {
         ORDER BY registration_date DESC
     `, [], (err, rows) => {
         if (err) {
+            console.error('Error fetching applicants:', err);
             res.status(500).json({ error: err.message });
             return;
         }
@@ -126,15 +184,82 @@ app.get('/api/admin/stats', (req, res) => {
         FROM applicants
     `, [], (err, stats) => {
         if (err) {
+            console.error('Error fetching stats:', err);
             res.status(500).json({ error: err.message });
             return;
         }
-        res.json(stats);
+        res.json(stats || { total_applicants: 0, passed_exam: 0, paid_applicants: 0, total_collected: 0 });
     });
 });
 
+// ============================================
+// CATCH-ALL ROUTE FOR CLIENT-SIDE ROUTING
+// This ensures any deep links work correctly
+// ============================================
+app.get('*', (req, res) => {
+    const requestedPath = req.path;
+    
+    // Skip API and admin routes (they should 404 if not found)
+    if (requestedPath.startsWith('/api/') || requestedPath.startsWith('/admin')) {
+        res.status(404).send('Endpoint not found');
+        return;
+    }
+    
+    // For any other path, try to serve corresponding HTML file from public folder
+    const possibleHtmlFile = path.join(__dirname, 'public', requestedPath + '.html');
+    
+    if (fs.existsSync(possibleHtmlFile)) {
+        res.sendFile(possibleHtmlFile);
+    } else {
+        // If no matching HTML file, serve index.html for client-side routing
+        // This handles routes like /exam, /results, /payment etc.
+        const indexPath = path.join(__dirname, 'public', 'index.html');
+        if (fs.existsSync(indexPath)) {
+            res.sendFile(indexPath);
+        } else {
+            res.status(404).send('Page not found');
+        }
+    }
+});
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+    console.error('Server error:', err.stack);
+    res.status(500).send('Something broke! Please check server logs.');
+});
+
 // Start server
-app.listen(PORT, () => {
-    console.log(`Fraud simulation server running on http://localhost:${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`=================================`);
+    console.log(`Fraud simulation server running`);
+    console.log(`Port: ${PORT}`);
+    console.log(`Main URL: http://localhost:${PORT}`);
     console.log(`Admin panel: http://localhost:${PORT}/admin`);
+    console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`=================================`);
+});
+
+// Handle graceful shutdown
+process.on('SIGTERM', () => {
+    console.log('SIGTERM received, closing database connection...');
+    db.close((err) => {
+        if (err) {
+            console.error('Error closing database:', err);
+        } else {
+            console.log('Database connection closed');
+        }
+        process.exit(0);
+    });
+});
+
+process.on('SIGINT', () => {
+    console.log('SIGINT received, closing database connection...');
+    db.close((err) => {
+        if (err) {
+            console.error('Error closing database:', err);
+        } else {
+            console.log('Database connection closed');
+        }
+        process.exit(0);
+    });
 });
