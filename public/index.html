@@ -1,0 +1,227 @@
+ 
+<!DOCTYPE html>
+<html lang="am">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ኢትዮጵያ አየር መንገድ - አዲስ አመልካቾች ምዝገባ | Ethiopian Airlines Recruitment</title>
+    <link rel="stylesheet" href="/styles/main.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+        .header {
+            background: linear-gradient(135deg, #0b3b5c, #1e5a7a);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+            border-bottom: 5px solid #f0b90b;
+        }
+        .logo {
+            max-width: 250px;
+            margin-bottom: 20px;
+        }
+        .warning-banner {
+            background: #f0b90b;
+            color: #0b3b5c;
+            padding: 15px;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        .info-panel {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-left: 5px solid #f0b90b;
+        }
+        .info-panel h3 {
+            color: #0b3b5c;
+            margin-bottom: 15px;
+        }
+        .info-panel ul {
+            list-style: none;
+            padding: 0;
+        }
+        .info-panel li {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            font-size: 16px;
+        }
+        form {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: #f0b90b;
+            box-shadow: 0 0 5px rgba(240,185,11,0.5);
+        }
+        small {
+            display: block;
+            margin-top: 5px;
+            color: #666;
+            font-size: 12px;
+        }
+        .terms {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 5px;
+        }
+        .btn-start {
+            background: #f0b90b;
+            color: #0b3b5c;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.3s;
+        }
+        .btn-start:hover {
+            background: #d4a50a;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background: #333;
+            color: white;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="https://upload.wikimedia.org/wikipedia/en/thumb/6/6d/Ethiopian_Airlines_Logo.svg/1200px-Ethiopian_Airlines_Logo.svg.png" 
+             alt="Ethiopian Airlines" class="logo" 
+             onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 fill=%22%230b3b5c%22/><text x=%2210%22 y=%2260%22 fill=%22%23f0b90b%22 font-size=%2220%22>ETHIOPIAN</text></svg>'">
+        <h1>የኢትዮጵያ አየር መንገድ አዲስ አመልካቾች መመዘኛ ፈተና 2026</h1>
+        <h2>Ethiopian Airlines New Applicants Screening Exam 2026</h2>
+    </div>
+    
+    <div class="warning-banner">
+        ⚠️ ማስታወቂያ: 4,000 ባዶ ቦታዎች! አመልክተው ይሞክሩ! | 4,000 VACANCIES! APPLY NOW!
+    </div>
+
+    <div class="container">
+        <div class="info-panel">
+            <h3>Important Information / አስፈላጊ መረጃ</h3>
+            <ul>
+                <li>⏱️ Exam Time: 35 Minutes / 35 ደቂቃ</li>
+                <li>📝 Questions: 30 / 30 ጥያቄዎች</li>
+                <li>✅ Passing Score: 50% (15/30) / 50% (15/30)</li>
+                <li>💰 Processing Fee: 700 ETB (payable after passing)</li>
+                <li>🏥 Medical Checkup: 1,500 ETB (after passing)</li>
+                <li>🔁 Training Deposit: 3,000 ETB (refundable)</li>
+            </ul>
+        </div>
+
+        <form id="registrationForm" action="/api/auth/register" method="POST">
+            <h3>Personal Information / የግል መረጃ</h3>
+            
+            <div class="form-group">
+                <label for="fullname">Full Name (English) / ሙሉ ስም (እንግሊዝኛ)</label>
+                <input type="text" id="fullname" name="fullname" required placeholder="e.g., Abebe Kebede">
+            </div>
+
+            <div class="form-group">
+                <label for="fullname_amharic">Full Name (Amharic) / ሙሉ ስም (አማርኛ)</label>
+                <input type="text" id="fullname_amharic" name="fullname_amharic" required placeholder="ለምሳሌ፡ አበበ ከበደ">
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Phone Number / ስልክ ቁጥር</label>
+                <input type="tel" id="phone" name="phone" required placeholder="09XXXXXXXX" pattern="[0-9]{10}">
+                <small>This number will receive your results via SMS / ውጤትዎ በዚህ ቁጥር ይላካል</small>
+            </div>
+
+            <div class="form-group">
+                <label for="telegram">Telegram Username / የቴሌግራም ስም</label>
+                <input type="text" id="telegram" name="telegram" placeholder="@username">
+                <small>For faster communication / ለፈጣን ግንኙነት</small>
+            </div>
+
+            <div class="form-group">
+                <label for="education">Education Level / የትምህርት ደረጃ</label>
+                <select id="education" name="education" required>
+                    <option value="">-- Select / ይምረጡ --</option>
+                    <option value="grade10">Grade 10 Complete / 10ኛ ክፍል ያጠናቀቀ</option>
+                    <option value="grade12">Grade 12 Complete / 12ኛ ክፍል ያጠናቀቀ</option>
+                    <option value="certificate">Certificate / ሰርተፍኬት</option>
+                    <option value="diploma">Diploma / ዲፕሎማ</option>
+                    <option value="degree">Degree / ዲግሪ</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="region">Region / ክልል</label>
+                <select id="region" name="region" required>
+                    <option value="">-- Select / ይምረጡ --</option>
+                    <option value="addis">Addis Ababa / አዲስ አበባ</option>
+                    <option value="oromia">Oromia / ኦሮሚያ</option>
+                    <option value="amhara">Amhara / አማራ</option>
+                    <option value="tigray">Tigray / ትግራይ</option>
+                    <option value="sidama">Sidama / ሲዳማ</option>
+                    <option value="snnpr">SNNPR / ደቡብ</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="id_number">ID Card Number (የመታወቂያ ቁጥር)</label>
+                <input type="text" id="id_number" name="id_number" required placeholder="Kebele ID / Passport Number">
+            </div>
+
+            <div class="terms">
+                <input type="checkbox" id="agree" name="agree" required>
+                <label for="agree">I confirm that all information provided is correct and I understand this is an official Ethiopian Airlines recruitment process. / የሰጠሁት መረጃ ትክክል መሆኑን አረጋግጣለሁ እና ይህ ኦፊሴላዊ የኢትዮጵያ አየር መንገድ ቅጥር ሂደት መሆኑን ተረድቻለሁ።</label>
+            </div>
+
+            <button type="submit" class="btn-start">Start Exam / ፈተናውን ይጀምሩ</button>
+        </form>
+    </div>
+
+    <div class="footer">
+        <p>© 2026 Ethiopian Airlines Group. All rights reserved. / መብቱ በህግ የተጠበቀ ነው።</p>
+    </div>
+
+    <script>
+        // Store applicant data locally for tracking
+        document.getElementById('registrationForm').addEventListener('submit', function(e) {
+            const phone = document.getElementById('phone').value;
+            localStorage.setItem('applicant_phone', phone);
+            localStorage.setItem('exam_started', new Date().toISOString());
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,320 @@
+ 
+<!DOCTYPE html>
+<html lang="am">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment - Ethiopian Airlines Recruitment</title>
+    <link rel="stylesheet" href="/styles/main.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+        .header {
+            background: linear-gradient(135deg, #0b3b5c, #1e5a7a);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        .payment-container {
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+        .amount-box {
+            background: #f0b90b;
+            color: #0b3b5c;
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        .amount {
+            font-size: 48px;
+            font-weight: bold;
+        }
+        .payment-options {
+            display: flex;
+            gap: 15px;
+            margin: 30px 0;
+        }
+        .payment-option {
+            flex: 1;
+            padding: 20px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .payment-option:hover {
+            border-color: #f0b90b;
+        }
+        .payment-option.selected {
+            border-color: #f0b90b;
+            background: #fff9e6;
+        }
+        .payment-option img {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 10px;
+        }
+        .bank-details, .telebirr-details {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: none;
+        }
+        .detail-row {
+            display: flex;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .detail-label {
+            font-weight: bold;
+            width: 120px;
+        }
+        .detail-value {
+            flex: 1;
+        }
+        .copy-btn {
+            background: #0b3b5c;
+            color: white;
+            border: none;
+            padding: 5px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        .btn-confirm {
+            background: #f0b90b;
+            color: #0b3b5c;
+            border: none;
+            padding: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 30px;
+        }
+        .warning {
+            background: #ffebee;
+            color: #c62828;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            font-size: 14px;
+        }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background: #333;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Payment / ክፍያ</h1>
+        <h2>Ethiopian Airlines Recruitment Processing Fee</h2>
+    </div>
+
+    <div class="payment-container">
+        <div class="amount-box">
+            <div style="font-size: 18px;">Processing Fee / የሂደት ክፍያ</div>
+            <div class="amount">700 ETB</div>
+        </div>
+
+        <div class="warning">
+            ⚠️ Important: This payment is for exam processing. Send payment receipt to @ETH_AIR_HR_2026 on Telegram.
+            <br>
+            <small>አስፈላጊ፡ ይህ ክፍያ ለፈተና ሂደት ነው። የክፍያ ደረሰኝ በቴሌግራም ይላኩ።</small>
+        </div>
+
+        <h3>Select Payment Method / የክፍያ ዘዴ ይምረጡ</h3>
+        
+        <div class="payment-options">
+            <div class="payment-option" id="optionTelebirr" onclick="selectPayment('telebirr')">
+                <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%230b3b5c'/><text x='18' y='68' fill='%23f0b90b' font-size='40'>T</text></svg>" alt="Telebirr">
+                <div><strong>Telebirr</strong></div>
+                <div>ቴሌብር</div>
+            </div>
+            <div class="payment-option" id="optionMpesa" onclick="selectPayment('mpesa')">
+                <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%234CAF50'/><text x='18' y='68' fill='white' font-size='40'>M</text></svg>" alt="MPesa">
+                <div><strong>MPesa</strong></div>
+                <div>ኤምፔሳ</div>
+            </div>
+            <div class="payment-option" id="optionBank" onclick="selectPayment('bank')">
+                <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='10' y='40' width='80' height='50' fill='%23999'/><rect x='20' y='10' width='60' height='30' fill='%23666'/><text x='30' y='75' fill='white' font-size='30'>🏦</text></svg>" alt="Bank">
+                <div><strong>Abay Bank</strong></div>
+                <div>አባይ ባንክ</div>
+            </div>
+        </div>
+
+        <!-- Telebirr Details -->
+        <div id="telebirrDetails" class="bank-details">
+            <h4>Telebirr Payment / የቴሌብር ክፍያ</h4>
+            <div class="detail-row">
+                <div class="detail-label">Number / ቁጥር:</div>
+                <div class="detail-value">
+                    <strong>0985-327-272</strong>
+                    <button class="copy-btn" onclick="copyToClipboard('0985327272')">Copy</button>
+                </div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Name / ስም:</div>
+                <div class="detail-value">Ethiopian Airlines Recruitment</div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Amount / መጠን:</div>
+                <div class="detail-value">700 ETB</div>
+            </div>
+            <p style="margin-top: 15px; color: #666;">
+                After payment, send screenshot to Telegram: @ETH_AIR_HR_2026
+                <br>
+                <small>ከክፍያ በኋላ ስክሪንሾት ወደ ቴሌግራም ይላኩ።</small>
+            </p>
+        </div>
+
+        <!-- MPesa Details -->
+        <div id="mpesaDetails" class="bank-details">
+            <h4>MPesa Payment / የኤምፔሳ ክፍያ</h4>
+            <div class="detail-row">
+                <div class="detail-label">Number / ቁጥር:</div>
+                <div class="detail-value">
+                    <strong>ለጊዜው የኤምፔሳ ክፍያ አይሰራም ።</strong>
+                    <button class="copy-btn" onclick="copyToClipboard('07XXXXXXXX')">Copy</button>
+                </div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Name / ስም:</div>
+                <div class="detail-value">Ethiopian Airlines</div>
+            </div>
+            <p style="margin-top: 15px; color: #666;">
+                Send payment receipt to Telegram after payment.
+            </p>
+        </div>
+
+        <!-- Bank Details -->
+        <div id="bankDetails" class="bank-details">
+            <h4>Abay Bank Payment / የአባይ ባንክ ክፍያ</h4>
+            <div class="detail-row">
+                <div class="detail-label">Bank / ባንክ:</div>
+                <div class="detail-value">Abay Bank S.C.</div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Account Name / የአካውንት ስም:</div>
+                <div class="detail-value">Ethiopian Airlines Group Recruitment Office</div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Account Number / የአካውንት ቁጥር:</div>
+                <div class="detail-value">
+                    <strong>4631012296320010</strong>
+                    <button class="copy-btn" onclick="copyToClipboard('4631012296320010')">Copy</button>
+                </div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Amount / መጠን:</div>
+                <div class="detail-value">700 ETB</div>
+            </div>
+            <p style="margin-top: 15px; color: #666;">
+                Deposit at any Abay Bank branch. Keep the receipt and send photo to Telegram.
+            </p>
+        </div>
+
+        <button class="btn-confirm" id="confirmPaymentBtn" disabled>I Have Made Payment / ከፍለዋለሁ</button>
+        
+        <p style="text-align: center; margin-top: 20px; color: #999; font-size: 12px;">
+            Transaction ID: <span id="transactionId">Loading...</span>
+        </p>
+    </div>
+
+    <div class="footer">
+        <p>© 2026 Ethiopian Airlines Group. All rights reserved.</p>
+    </div>
+
+    <script>
+        let selectedMethod = null;
+        const phone = localStorage.getItem('applicant_phone');
+        const transactionId = localStorage.getItem('payment_transaction') || 'TXN' + Date.now();
+        
+        document.getElementById('transactionId').textContent = transactionId;
+        
+        function selectPayment(method) {
+            selectedMethod = method;
+            
+            // Update UI
+            document.querySelectorAll('.payment-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            document.getElementById(`option${method.charAt(0).toUpperCase() + method.slice(1)}`).classList.add('selected');
+            
+            // Hide all details
+            document.getElementById('telebirrDetails').style.display = 'none';
+            document.getElementById('mpesaDetails').style.display = 'none';
+            document.getElementById('bankDetails').style.display = 'none';
+            
+            // Show selected details
+            if (method === 'telebirr') {
+                document.getElementById('telebirrDetails').style.display = 'block';
+            } else if (method === 'mpesa') {
+                document.getElementById('mpesaDetails').style.display = 'block';
+            } else if (method === 'bank') {
+                document.getElementById('bankDetails').style.display = 'block';
+            }
+            
+            // Enable confirm button
+            document.getElementById('confirmPaymentBtn').disabled = false;
+        }
+        
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Copied to clipboard! / ተገልብጧል!');
+            });
+        }
+        
+        document.getElementById('confirmPaymentBtn').addEventListener('click', function() {
+            if (!selectedMethod) {
+                alert('Please select payment method');
+                return;
+            }
+            
+            // Confirm payment with server
+            fetch('/api/payment/confirm', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    phone: phone,
+                    amount: 700,
+                    method: selectedMethod,
+                    transactionId: transactionId
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Payment confirmed! You will proceed to medical checkup stage.');
+                    window.location.href = '/payment-success.html';
+                } else {
+                    alert('Error confirming payment. Please contact support on Telegram.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Payment recorded. Our team will contact you on Telegram.');
+                window.location.href = '/payment-success.html';
+            });
+        });
+    </script>
+</body>
+</html>
